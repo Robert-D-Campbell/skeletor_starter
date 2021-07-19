@@ -14,3 +14,13 @@ class UserModelTests(CkcAPITestCase):
 
         self.assertEqual(user.email, email)
         self.assertTrue(user.check_password(password))
+
+    def test_user_creation_with_normalized_email(self):
+        """ Test user creation with normalized email"""
+        email = 'test@TEST.COM'
+        user = get_user_model().objects.create_user(
+            email,
+            'Password1!'
+        )
+        # use upper() to make test fail
+        self.assertEqual(user.email, email.lower())
