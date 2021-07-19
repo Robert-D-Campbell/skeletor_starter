@@ -39,3 +39,13 @@ class UserModelTests(CkcAPITestCase):
         
         self.assertTrue(user.is_superuser)
         self.assertTrue(user.is_staff)
+
+    def test_superuser_creation_invalid_permissions(self):
+        """Test superuser creation with False permissions raises error"""
+        with self.assertRaises(ValueError):
+            get_user_model().objects.create_superuser(
+            email='test@test.com',
+            password='Password1!',
+            is_staff=False,
+            is_superuser=False
+        )
