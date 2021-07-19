@@ -29,3 +29,13 @@ class UserModelTests(CkcAPITestCase):
         """Test user creation with None email raises error"""
         with self.assertRaises(ValueError):
             get_user_model().objects.create_user(None, 'Password1!')
+
+    def test_superuser_creation(self):
+        """Test superuser creation is successful"""
+        user= get_user_model().objects.create_superuser(
+            'test@test.com',
+            'Password1!'
+        )
+        
+        self.assertTrue(user.is_superuser)
+        self.assertTrue(user.is_staff)
