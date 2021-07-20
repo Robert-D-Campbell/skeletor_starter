@@ -32,3 +32,8 @@ class AdminSiteTests(CkcAPITestCase):
         self.assertContains(res, self.user.first_name)
         self.assertContains(res, self.user.last_name)
         self.assertContains(res, self.user.email)
+
+
+    def test_edit_user_page_works(self):
+        resp = self.client.get(reverse('admin:users_user_change', args=[self.user.id]))
+        assert resp.status_code == 200
