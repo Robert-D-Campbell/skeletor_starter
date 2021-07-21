@@ -1,10 +1,12 @@
 from django.contrib.auth import authenticate, login
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.settings import api_settings
 from rest_framework import views, status, generics
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from users.serializers import LoginSerializer, UserSerializer
+from users.serializers import LoginSerializer, UserSerializer, AuthTokenSerializer
 
 
 # TODO: Add to api docs ??
@@ -39,3 +41,8 @@ class CreateUserView(generics.CreateAPIView):
     """Create a new user in the system"""
     permission_classes = [AllowAny]
     serializer_class = UserSerializer
+
+class CreateTokenView(ObtainAuthToken):
+    """Create a new auth token for user"""
+    serializer_class = AuthTokenSerializer
+    renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
