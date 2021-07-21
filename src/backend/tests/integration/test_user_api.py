@@ -70,7 +70,7 @@ class PublicUserApiTests(CkcAPITestCase):
         payload = {'email': 'testing@testing.com', 'password': 'testing'}
         create_user(**payload)
         res = self.client.post(TOKEN_URL, payload)
-        print('RESPONSE.DATA CREATE TOKEN', res.data)
+        
         self.assertIn('token', res.data)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
@@ -80,7 +80,7 @@ class PublicUserApiTests(CkcAPITestCase):
         create_user(email='testing@testing.com', password='testing')
         payload = {'email': 'testing@testing.com', 'password': 'wrongPassword'}
         res = self.client.post(TOKEN_URL, payload)
-        print('RESPONSE.DATA CREATE TOKEN INVALID CREDENTIALS', res.data)
+
         self.assertNotIn('token', res.data)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -89,7 +89,7 @@ class PublicUserApiTests(CkcAPITestCase):
         """Test that token is not created if user doesn't exist"""
         payload = {'email': 'testing@testing.com', 'password': 'testing'}
         res=self.client.post(TOKEN_URL, payload)
-        print('RESPONSE.DATA CREATE TOKEN NO USER', res.data)
+
         self.assertNotIn('token', res.data)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -97,6 +97,6 @@ class PublicUserApiTests(CkcAPITestCase):
     def test_create_token_missing_field(self):
         """Test that email and password are required"""
         res = self.client.post(TOKEN_URL, {'email': '', 'password': ''})
-        print('RESPONSE.DATA CREATE TOKEN MISSING FIELDS', res.data)
+
         self.assertNotIn('token', res.data)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
