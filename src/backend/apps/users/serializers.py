@@ -39,3 +39,16 @@ class CustomUserDetailsSerializer(serializers.ModelSerializer):
             'last_name',
         )
         read_only_fields = ('email',)
+
+class UserSerializer(serializers.ModelSerializer):
+    """ Serializer for users object w/ password """
+
+    class Meta:
+        model = User
+        fields = ('id', 'email', 'password', 'first_name', 'last_name')
+        extra_kwargs = {'password': {'write_only': True, 'min_length': 5}}
+
+    # override the create function
+    def create(self, validated_data):
+        """Create a new user with an encrypted password and return it"""
+        return User.objects.create_user(**validated_data)

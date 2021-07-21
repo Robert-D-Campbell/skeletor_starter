@@ -2,11 +2,11 @@ from django.conf import settings
 from django.conf.urls import include
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.views.generic import TemplateView
 # from rest_framework import routers
 
-from users.views import LoginView
+from users.views import LoginView, CreateUserView
 
 
 # router = routers.DefaultRouter()
@@ -19,11 +19,11 @@ urlpatterns = [
     # TODO: Add to api docs ??
     # We're overriding dj-rest-auth login endpoint to set our own cookie with its own expiry
     path('api/auth/login/', LoginView.as_view(), name="rest_login"),
-
     path('api/auth/', include('dj_rest_auth.urls')),
 
     # Django built in
     path('admin/', admin.site.urls),
+    path('api/users/', include('users.urls')),
 
     # Pass through to our SPA (this template is in /frontend/dist docker volume)
     path('', TemplateView.as_view(template_name='index.html'), name="index"),

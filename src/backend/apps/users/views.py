@@ -1,10 +1,10 @@
 from django.contrib.auth import authenticate, login
-from rest_framework import views, status
+from rest_framework import views, status, generics
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from users.serializers import LoginSerializer
+from users.serializers import LoginSerializer, UserSerializer
 
 
 # TODO: Add to api docs ??
@@ -34,3 +34,8 @@ class LoginView(views.APIView):
             return Response(status=status.HTTP_200_OK)
         else:
             raise ValidationError({"non_field_errors": ["Incorrect login information."]})
+
+class CreateUserView(generics.CreateAPIView):
+    """Create a new user in the system"""
+    permission_classes = [AllowAny]
+    serializer_class = UserSerializer
