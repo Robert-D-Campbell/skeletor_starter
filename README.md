@@ -100,3 +100,7 @@ eg sending a welcome email....
 ```bash
 $ docker-compose exec django ./manage.py email welcome hello@ckcollab.com
 ```
+### Tests
+```
+docker-compose exec django pytest -rP && flake8
+```

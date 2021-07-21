@@ -1,6 +1,7 @@
 from django.urls import reverse
-from tests.utils import CkcAPITestCase, CkcAPIClient
 from django.contrib.auth import get_user_model
+
+from tests.utils import CkcAPITestCase, CkcAPIClient
 
 
 class AdminSiteTests(CkcAPITestCase):

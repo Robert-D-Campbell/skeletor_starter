@@ -1,6 +1,5 @@
-
-from tests.utils import CkcAPITestCase
 from django.contrib.auth import get_user_model
+from tests.utils import CkcAPITestCase
 
 class UserModelTests(CkcAPITestCase):
     def test_user_creation_with_successful_email(self):
