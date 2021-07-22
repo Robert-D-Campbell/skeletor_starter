@@ -1,6 +1,10 @@
 from django.contrib.auth import get_user_model
 from tests.utils import CkcAPITestCase
+from recipes import models
 
+def sample_user(email='testing@testing.com', password='testing'):
+    """Create sample user"""
+    return get_user_model().objects.create_user(email, password)
 class UserModelTests(CkcAPITestCase):
     def test_user_creation_with_successful_email(self):
         """Test user creation with successful email"""
@@ -48,3 +52,12 @@ class UserModelTests(CkcAPITestCase):
             is_staff=False,
             is_superuser=False
         )
+
+    def test_tag_str(self):
+        """Test the Tag string representation"""
+        tag = models.Tag.objects.create(
+            user=sample_user(),
+            name='Vegetarian'
+        )
+
+        self.assertEqual(str(tag), tag.name)
