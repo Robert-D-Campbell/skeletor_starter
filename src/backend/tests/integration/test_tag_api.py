@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from tests.utils import CkcAPITestCase, CkcAPIClient
 from django.urls import reverse
 
-from rest_framework.test import status
+from rest_framework import status
 
 from recipes.models import Tag
 
