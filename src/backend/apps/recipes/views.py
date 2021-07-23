@@ -5,9 +5,21 @@ from rest_framework.permissions import IsAuthenticated
 from recipes import serializers
 from recipes.models import Tag
 
-class TagViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
-    """Manage tags in the database"""
+
+
+class BaseRecipeAttrViewSet(viewsets.GenericViewSet,
+                            mixins.ListModelMixin,
+                            mixins.CreateModelMixin):
+    """Manage recipe attributes in the database"""
+
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        """Return objects from the current authenticated user only"""
+        return self.queryset.filter(user=self.request.user).order_by('-name')
+class TagViewSet(BaseRecipeAttrViewSet):
+    """Manage tags in the database"""
+
     queryset = Tag.objects.all()
     serializer_class = serializers.TagSerializer

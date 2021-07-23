@@ -50,22 +50,16 @@ class PrivateTagApiTests(CkcAPITestCase):
         self.assertEqual(res.data, serializer.data)
 
 # TODO: get this working.
-    # def test_tags_limited_to_user(self):
-    #     """Test that tags returned are for the authenticated user"""
+    def test_tags_limited_to_user(self):
+        #! test that tags returned are for the authenticated user
+        user2 = get_user_model().objects.create_user(
+            'other@gmail.com',
+            'testpass'
+        )
+        Tag.objects.create(user=user2, name='Fruity')
+        tag = Tag.objects.create(user=self.user, name='Confort food')
+        res = self.client.get(TAGS_URL)
 
-    #     otherUser = get_user_model().objects.create_user(
-    #         'other@testing.com',
-    #         'other'
-    #     )
-
-    #     Tag.objects.create(user=otherUser, name='Pastry')
-    #     tag = Tag.objects.create(user=self.user, name='Dessert')
-
-    #     res = self.client.get(TAGS_URL)
-    #     print('RESPONSE', res)
-    #     print('RESPONSE DATA', res.data)
-    #     print('SELF USER', self.user)
-    #     print('OTHER USER', otherUser)
-    #     self.assertEqual(res.status_code, status.HTTP_200_OK)
-    #     self.assertEqual(len(res.data), 1)
-    #     self.assertEqual(res.data[0]['name'], tag.name)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(res.data), 1)
+        self.assertEqual(res.data[0]['name'], tag.name) 
