@@ -3,7 +3,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 from recipes import serializers
-from recipes.models import Tag
+from recipes.models import Tag, Ingredient
 
 
 
@@ -28,4 +28,15 @@ class TagViewSet(BaseRecipeAttrViewSet):
 
     def perform_create(self, serializer):
         """Create a new tag"""
+        serializer.save(user=self.request.user)
+
+
+class IngredientViewSet(BaseRecipeAttrViewSet):
+    """Manage ingredients in the database"""
+
+    queryset = Ingredient.objects.all()
+    serializer_class = serializers.IngredientSerializer
+
+    def perform_create(self, serializer):
+        """Create a new ingredient"""
         serializer.save(user=self.request.user)
