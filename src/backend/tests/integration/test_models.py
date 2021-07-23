@@ -64,10 +64,21 @@ class UserModelTests(CkcAPITestCase):
 
 
     def test_ingredient_str(self):
-        """Test the Tag string representation"""
+        """Test the Ingredient string representation"""
         ingredient = models.Ingredient.objects.create(
             user=sample_user(),
             name='Chicken'
         )
 
         self.assertEqual(str(ingredient), ingredient.name)
+
+    def test_recipe_str(self):
+        """Test the Recipe string representation"""
+        recipe = models.Recipe.objects.create(
+            user=sample_user(),
+            title='Chicken Alfredo',
+            time_minutes=15,
+            price=12.99
+        )
+
+        self.assertEqual(str(recipe), recipe.title)
