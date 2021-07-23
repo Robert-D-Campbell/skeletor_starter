@@ -18,8 +18,14 @@ class BaseRecipeAttrViewSet(viewsets.GenericViewSet,
     def get_queryset(self):
         """Return objects from the current authenticated user only"""
         return self.queryset.filter(user=self.request.user).order_by('-name')
+
+
 class TagViewSet(BaseRecipeAttrViewSet):
     """Manage tags in the database"""
 
     queryset = Tag.objects.all()
     serializer_class = serializers.TagSerializer
+
+    def perform_create(self, serializer):
+        """Create a new tag"""
+        serializer.save(user=self.request.user)
