@@ -4,14 +4,18 @@ from django.urls import reverse
 
 from rest_framework import status, test
 
-from recipes.models import Recipe
+from recipes.models import Recipe, Tag, Ingredient
 
-from recipes.serializers import RecipeSerializer
+from recipes.serializers import RecipeSerializer, RecipeDetailSerializer
 
 
 # Viewset automatically appends action name to url
 RECIPES_URL = reverse('recipes:recipe-list')
 
+
+def detail_url(recipe_id):
+    """Return recipe detail URL"""
+    return reverse('recipes:recipe-detail', args=[recipe_id])
 
 def sample_recipe(user, **kwargs):
     """Create and return sample recipe"""
@@ -24,6 +28,15 @@ def sample_recipe(user, **kwargs):
     defaults.update(kwargs)
 
     return Recipe.objects.create(user=user, **defaults)
+
+def sample_ingredient(user, name='chicken'):
+    """Create and return sample ingredient"""
+    return Ingredient.objects.create(user=user, name=name)
+
+def sample_tag(user, name='Italian'):
+    """Create and return sample tag"""
+    return Tag.objects.create(user=user, name=name)
+
 
 
 class PublicRecipeApiTests(CkcAPITestCase):
@@ -87,3 +100,14 @@ class PrivateRecipeApiTests(CkcAPITestCase):
         res = self.client.post(RECIPES_URL, payload)
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_view_recipe_detail(self):
+        """Test viewing a recipe detail"""
+        recipe = sample_recipe(user=self.user)
+        recipe.tags.add(sample_tag(user=self.user))
+        recipe.ingredients.add(sample_ingredient(user=self.user))
+
+        url = detail_url(recipe.id)
+        res = self.client.get(url)
+        serializer = RecipeDetailSerializer(recipe)
+        self.assertEqual(res.data, serializer.data)
