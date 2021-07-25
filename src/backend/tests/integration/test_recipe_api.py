@@ -111,3 +111,62 @@ class PrivateRecipeApiTests(CkcAPITestCase):
         res = self.client.get(url)
         serializer = RecipeDetailSerializer(recipe)
         self.assertEqual(res.data, serializer.data)
+
+    def test_create_recipe(self):
+        """Test recipe creation"""
+        payload ={
+            'title': 'Chocolate Cheesecake',
+            'time_minutes': 30,
+            'price': 5.00
+        }
+        res = self.client.post(RECIPES_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        recipe = Recipe.objects.get(id=res.data['id'])
+        for key in payload.keys():
+            # getattr() retrieves attribute from an object by passing in a variable 
+            self.assertEqual(payload[key], getattr(recipe, key))
+
+    def test_create_recipe_with_tags(self):
+        """Test recipe creation with tags"""
+        tag1 =sample_tag(user=self.user, name='Vegetarian')
+        tag2 =sample_tag(user=self.user, name='Italian')
+        payload = {
+            'title': 'Stuffed Tomatoes',
+            'tags': [tag1.id, tag2.id],
+            'time_minutes': 50,
+            'price': 20
+        }
+        res = self.client.post(RECIPES_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+        recipe = Recipe.objects.get(id=res.data['id'])
+        tags = recipe.tags.all()
+
+        self.assertEqual(tags.count(), 2)
+        # checks if value is in lists or querysets
+        self.assertIn(tag1, tags)
+        self.assertIn(tag2, tags)
+
+    def test_create_recipe_with_ingredients(self):
+        """Test recipe creation with ingredients"""
+        ingredient1 = sample_ingredient(user=self.user, name='chicken')
+        ingredient2 = sample_ingredient(user=self.user, name='Potatoes')
+        payload = {
+            'title': 'Southern Cookin',
+            'ingredients': [ingredient1.id, ingredient2.id],
+            'time_minutes': 45,
+            'price': 15
+        }
+        res = self.client.post(RECIPES_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+        recipe = Recipe.objects.get(id=res.data['id'])
+        ingredients = recipe.ingredients.all()
+
+        self.assertEqual(ingredients.count(), 2)
+        # checks if value is in lists or querysets
+        self.assertIn(ingredient1, ingredients)
+        self.assertIn(ingredient2, ingredients)
